@@ -1,0 +1,53 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: leadgen-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - NODE_ENV=production
+      - FRONTEND_URL=http://localhost:3000
+      - JWT_ACCESS_SECRET=devorae_docker_access_jwt_key_change_in_prod
+      - JWT_REFRESH_SECRET=devorae_docker_refresh_jwt_key_change_in_prod
+      - MONGODB_URI=mongodb://mongo:27017/leadgen_audit
+      - SUPABASE_URL=${SUPABASE_URL:-}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY:-}
+      - SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASS=${SMTP_PASS:-}
+      - ADMIN_NOTIFICATION_EMAIL=${ADMIN_NOTIFICATION_EMAIL:-admin@example.com}
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - leadgen-network
+
+  mongo:
+    image: mongo:7.0
+    container_name: leadgen-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - leadgen-network
+
+networks:
+  leadgen-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local

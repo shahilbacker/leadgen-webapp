@@ -65,6 +65,51 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || 'YOUR_GOOGLE_VERIFICATION_TOKEN',
+  },
+};
+
+// JSON-LD Structured Data Schema for Google Search Console & Google Business Profile (LocalBusiness / Organization)
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: 'ApexGrowth',
+  alternateName: 'ApexGrowth Technologies',
+  description:
+    'Accelerate your revenue engine with ApexGrowth. Enterprise-grade demand generation, bespoke sales funnels, and automated lead qualification.',
+  url: SITE_URL,
+  logo: `${SITE_URL}/logo.png`,
+  image: `${SITE_URL}/og-image.png`,
+  telephone: '+1-555-234-5678',
+  email: 'contact@apexgrowth.com',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '100 Montgomery St, Suite 1800',
+    addressLocality: 'San Francisco',
+    addressRegion: 'CA',
+    postalCode: '94104',
+    addressCountry: 'US',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 37.7912,
+    longitude: -122.4021,
+  },
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: '09:00',
+      closes: '18:00',
+    },
+  ],
+  sameAs: [
+    'https://twitter.com/apexgrowth',
+    'https://www.linkedin.com/company/apexgrowth',
+    'https://maps.google.com/?cid=YOUR_GOOGLE_BUSINESS_CID',
+  ],
+  priceRange: '$$$$',
 };
 
 export default function RootLayout({
@@ -78,6 +123,11 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <meta name="theme-color" content="#2563eb" />
+        {/* Google Business Profile & Rich Snippets JSON-LD Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </head>
       <body>
         <ThemeRegistry>
